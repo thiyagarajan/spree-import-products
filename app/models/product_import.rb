@@ -110,14 +110,14 @@ class ProductImport < ActiveRecord::Base
     options[:with].each do |field, value|
       variant.send("#{field}=", value) if variant.respond_to?("#{field}=")
       applicable_option_type = OptionType.find(:first, :conditions => [
-        "lower(presentation) = ? OR lower(name) = ?",
-        field.to_s, field.to_s]
+          "lower(presentation) = ? OR lower(name) = ?",
+          field.to_s, field.to_s]
       )
       if applicable_option_type.is_a?(OptionType)
         product.option_types << applicable_option_type unless product.option_types.include?(applicable_option_type)
         variant.option_values << applicable_option_type.option_values.find(
-          :all,
-          :conditions => ["presentation = ? OR name = ?", value, value]
+            :all,
+            :conditions => ["presentation = ? OR name = ?", value, value]
         )
       end
     end
@@ -140,7 +140,7 @@ class ProductImport < ActiveRecord::Base
       log("Variant of SKU #{variant.sku} successfully imported.\n")
     else
       log("A variant could not be imported - here is the information we have:\n" +
-          "#{pp options[:with]}, :error")
+              "#{pp options[:with]}, :error")
       return false
     end
   end
@@ -165,7 +165,7 @@ class ProductImport < ActiveRecord::Base
     #We can't continue without a valid product here
     unless product.valid?
       log("A product could not be imported - here is the information we have:\n" +
-          "#{pp params_hash}, :error")
+              "#{pp params_hash}, :error")
       return false
     end
 
@@ -194,11 +194,11 @@ class ProductImport < ActiveRecord::Base
       if IMPORT_PRODUCT_SETTINGS[:multi_domain_importing] && product.respond_to?(:stores)
         begin
           store = Store.find(
-            :first,
-            :conditions => ["id = ? OR code = ?",
-              params_hash[IMPORT_PRODUCT_SETTINGS[:store_field]],
-              params_hash[IMPORT_PRODUCT_SETTINGS[:store_field]]
-            ]
+              :first,
+              :conditions => ["id = ? OR code = ?",
+                              params_hash[IMPORT_PRODUCT_SETTINGS[:store_field]],
+                              params_hash[IMPORT_PRODUCT_SETTINGS[:store_field]]
+              ]
           )
 
           product.stores << store
@@ -256,8 +256,8 @@ class ProductImport < ActiveRecord::Base
     file = filename =~ /\Ahttp[s]*:\/\// ? fetch_remote_image(filename) : fetch_local_image(filename)
     #An image has an attachment (the image file) and some object which 'views' it
     product_image = Image.new({:attachment => file,
-                              :viewable => product_or_variant,
-                              :position => product_or_variant.images.length
+                               :viewable => product_or_variant,
+                               :position => product_or_variant.images.length
                               })
 
     product_or_variant.images << product_image if product_image.save
@@ -323,6 +323,7 @@ class ProductImport < ActiveRecord::Base
       product.taxons << last_taxon unless product.taxons.include?(last_taxon)
     end
   end
+
   ### END TAXON HELPERS ###
 
   # May be implemented via decorator if useful:
